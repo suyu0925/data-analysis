@@ -61,7 +61,7 @@ udacious <- c("Chris Saden", "Lauren Castellano",
 
 ​              "Andy Brown", "Moira Burke",
 
-​              "Kunal Chawla", YOUR_NAME)
+​              "Kunal Chawla", "Lance Su")
 
 # 注意 R 如何在工作区更新 'udacious'。
 
