@@ -241,7 +241,34 @@ Notes:
 Notes:
 
 ```{r Add a Scaling Layer}
+# install.packages('gridExtra')
+library(gridExtra) 
 
+# define individual plots
+p1 <- ggplot(aes(x = friend_count), data = pf) + 
+  geom_histogram(binwidth = 100, 
+                 color = 'black', 
+                 fill = '#F79420') +
+  # scale_x_continuous(breaks = seq(1, 7, 1), limits = c(0, 4)) +
+  xlab('Friend count') +
+  ylab('Number of users in sample')
+p2 <- ggplot(aes(x = log10(friend_count)), data = pf) + 
+  geom_histogram(binwidth = .25, 
+                 color = 'black', 
+                 fill = '#F79420') +
+  # scale_x_continuous(breaks = seq(1, 7, 1), limits = c(0, 7)) +
+  xlab('Friend count(log10)') +
+  ylab('Number of users in sample')
+p3 <- ggplot(aes(x = sqrt(friend_count)), data = pf) + 
+  geom_histogram(binwidth = 2, 
+                 color = 'black', 
+                 fill = '#F79420') +
+  # scale_x_continuous(breaks = seq(1, 7, 1), limits = c(0, 7)) +
+  xlab('Friend count(sqrt)') +
+  ylab('Number of users in sample')
+
+# arrange plots in grid
+grid.arrange(p1, p2, p3, ncol=3)
 ```
 
 ***
@@ -250,7 +277,11 @@ Notes:
 ### Frequency Polygons
 
 ```{r Frequency Polygons}
-
+ggplot(aes(x = friend_count, y = ..count../sum(..count..)), data = subset(pf, !is.na(gender))) + 
+  geom_freqpoly(aes(color = gender), binwidth = 10) + 
+  scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 50)) + 
+  xlab('好友数量') + 
+  ylab('Percentage of users with that friend count')
 ```
 
 ***
@@ -259,7 +290,12 @@ Notes:
 Notes:
 
 ```{r Likes on the Web}
+www_likes_data = subset(pf, !is.na(gender))
+ggplot(aes(x = www_likes), data = www_likes_data) + 
+  geom_freqpoly(aes(color = gender)) + 
+  scale_x_log10()
 
+by(pf$www_likes, pf$gender, sum)
 ```
 
 
@@ -269,13 +305,27 @@ Notes:
 Notes:
 
 ```{r Box Plots}
-
+qplot(x = gender, y = friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot')
 ```
 
 #### Adjust the code to focus on users who have friend counts between 0 and 1000.
 
 ```{r}
+qplot(x = gender, y = friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot', ylim = c(0, 1000))
 
+qplot(x = gender, y = friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot', ylim = c(0, 1000))
+
+# 注意female的箱形图顶部，在250左右，并且没有“Removed 2949 rows...”的提示
+qplot(x = gender, y = friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0, 1000))
 ```
 
 ***
@@ -284,7 +334,12 @@ Notes:
 Notes:
 
 ```{r Box Plots, Quartiles, and Friendships}
+qplot(x = gender, y = friend_count, 
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0, 250))
 
+by(pf$friend_count, pf$gender, summary)
 ```
 
 #### On average, who initiated more friendships in our sample: men or women?
@@ -292,7 +347,12 @@ Response:
 #### Write about some ways that you can verify your answer.
 Response:
 ```{r Friend Requests by Gender}
+qplot(x = gender, y = friendships_initiated,
+      data = subset(pf, !is.na(gender)), 
+      geom = 'boxplot') +
+  coord_cartesian(ylim = c(0, 130))
 
+by(pf$friendships_initiated, pf$gender, summary)
 ```
 
 Response:
@@ -303,7 +363,12 @@ Response:
 Notes:
 
 ```{r Getting Logical}
+pf$mobile_check_in <- NA
+pf$mobile_check_in = ifelse(pf$mobile_likes > 0, 1, 0)
+pf$mobile_check_in = factor(pf$mobile_check_in)
+summary(pf$mobile_check_in)
 
+sum(pf$mobile_check_in == 1) / length(pf$mobile_check_in)
 ```
 
 Response:

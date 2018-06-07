@@ -3,6 +3,11 @@ Lesson 4
 
 ***
 
+```{r library and dataset}
+library(ggplot2)
+pf <- read.csv('../lesson3/pseudo_facebook.tsv', sep = '\t')
+```
+
 ### Scatterplots and Perceived Audience Size
 Notes:
 
@@ -12,7 +17,7 @@ Notes:
 Notes:
 
 ```{r Scatterplots}
-
+qplot(x = age, y = friend_count, data = pf)
 ```
 
 ***
@@ -26,7 +31,9 @@ Response:
 Notes:
 
 ```{r ggplot Syntax}
-
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_point() + 
+  xlim(13, 113)
 ```
 
 ***
@@ -35,7 +42,9 @@ Notes:
 Notes:
 
 ```{r Overplotting}
-
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_jitter(alpha = 1 / 20) + 
+  xlim(13, 113)
 ```
 
 #### What do you notice in the plot?
